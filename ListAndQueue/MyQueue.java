@@ -1,13 +1,14 @@
-package ListAndQueue;
-
-import java.util.NoSuchElementException;
-
 /**
  * Implementing Queue from scratch, FIFO.
  * @author Jolene
  *
  */
-public class MyQueue<T> {
+
+package ListAndQueue;
+
+import java.util.NoSuchElementException;
+
+public class MyQueue {
 
 	private Link head;
 	private Link tail;
@@ -28,29 +29,52 @@ public class MyQueue<T> {
 		this.size = 0;
 	}
 	
+	public boolean isEmpty() {
+		return ((head == null) && (tail == null));
+	}
+	
 	/**
-	 * Inserts specified element into queue, wihthout violating capacity
-	 * restrictions.
-	 * @return true if inserted
-	 * @throws IllegalStateException if no space available
-	 * @throws NullPointerException if element to append is null
+	 * Adds an item to back of queue
+	 * @param o
 	 */
-	public boolean add(Object o) throws IllegalStateException, NullPointerException {
-		
-		if (size == capacity) {
-			throw new IllegalStateException("Max number of elements in queue.");
-		} else if (o == null) {
-			throw new NullPointerException("Element is empty.");
-		}
-		
+	public void enqueue(Object o) {
 		Link append = new Link(o);
 		
-		tail.next = append;
-		append.prev = tail;
-		tail = append;
-		size++;
+		if (tail == null) {
+			tail = append;
+			tail.prev = head;
+			size++;
+		} else {
+			tail.next = append;
+			append.prev = tail;
+			tail = append;
+			size++;
+		}
+	}
+	
+	/**
+	 * Removes item at front of queue
+	 */
+	public void dequeue() {
+		head = head.next;
+		head.prev = null;
+		if (head == null) {
+			tail = null;
+			size = 0;
+		}
+		size--;
+	}
+	
+	/**
+	 * Retrieves, but does not remove head of queue
+	 * @return null if empty, head otherwise
+	 */
+	public Object peek() {
+		if (head == null && tail == null) {
+			return null;
+		}
 		
-		return true;
+		return head;
 	}
 	
 	/**
@@ -122,16 +146,30 @@ public class MyQueue<T> {
 		
 		return head;
 	}
-	
+
 	/**
-	 * Retrieves, but does not remove head of queue
-	 * @return null if empty, head otherwise
+	 * Inserts specified element into queue, wihthout violating capacity
+	 * restrictions.
+	 * @return true if inserted
+	 * @throws IllegalStateException if no space available
+	 * @throws NullPointerException if element to append is null
 	 */
-	public Object peek() {
-		if (head == null && tail == null) {
-			return null;
+	
+	public boolean add(Object o) throws IllegalStateException, NullPointerException {
+		
+		if (size == capacity) {
+			throw new IllegalStateException("Max number of elements in queue.");
+		} else if (o == null) {
+			throw new NullPointerException("Element is empty.");
 		}
 		
-		return head;
+		Link append = new Link(o);
+		
+		tail.next = append;
+		append.prev = tail;
+		tail = append;
+		size++;
+		
+		return true;
 	}
 }

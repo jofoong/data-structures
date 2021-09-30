@@ -1,18 +1,19 @@
-
-package LList;
-
-import java.util.Collection;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 /**
- * Implementation of linked list.
+ * TODO: make this a doubly linked list. whoops!
+ * 
+ * Implementation of doubly-linked list.
  * (Just realised implementing all function in the docs 
  * is just @____@)
  * 
  * @author Jolene
  * @since 28/9/21
  */
+package LList;
+
+import java.util.Collection;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+
 public class LList {
 		
 	private Link head;
@@ -25,57 +26,92 @@ public class LList {
 		this.capacity = 0;
 	}
 
+	/**
+	 * Return the first element of the list
+	 * @throws NoSuchElementException if list is empty
+	 */
 	public Object getFirst() throws NoSuchElementException {
-		if (head == null) {
+		if (head == null && tail == null) {
 			throw new NoSuchElementException("List is empty.");
 		}
 		return head;
 	}
 	
+	/**
+	 * Return last element on list
+	 * @throws NoSuchElementException if list is empty
+	 */
 	public Object getLast() throws NoSuchElementException {
-		if (tail == null) {
+		if (head == null && tail == null) {
 			throw new NoSuchElementException("List is empty.");
 		}
 		return tail;
 	}
 	
+	/**
+	 * Returns and removes first element of list
+	 * @throws NoSuchElementException if list is empty
+	 */
 	public Object removeFirst() throws NoSuchElementException {
-		if (head == null) {
+		if (head == null && tail == null) {
 			throw new NoSuchElementException("List is empty.");
 		}
+		
 		Object removed = head;
 		head = head.next;
+		head.prev = null;
 		capacity--;
 		return removed;
 	}
 	
+	/**
+	 * Returns and removes last element of list
+	 * @throws NoSuchElementException if list is empty
+	 */
 	public Object removeLast() throws NoSuchElementException {
-		if (head == null) {
+		if (head == null && tail == null) {
 			throw new NoSuchElementException("List is empty.");
 		}
+		
 		Object removed = tail;
-		tail = null;
+		tail = tail.prev;
+		tail.next = null;
 		capacity--;
 		return removed;
 	}
 	
+	/**
+	 * Insert element to beginning of list
+	 */
 	public void addFirst(Object item) {
-		Link itemLink = new Link(item);
-		itemLink.next = head;
-		head = itemLink;
+		Link insert = new Link(item);
+		
+		Link temp = head;
+		head = insert;
+		insert.next = temp;
+		
 		capacity++;
 	}
 	
+	/**
+	 * Appends element to end of list
+	 */
 	public void addLast(Object item) {
-		Link itemLink = new Link(item);
-		tail.next = itemLink;
-		tail = itemLink;
+		Link insert = new Link(item);
+		tail.next = insert;
+		tail = insert;
+		
 		capacity++;
 	}
 	
+	/**
+	 * Returns true if specified element is in list 
+	 * @param o element to find
+	 */
 	public boolean contains(Object o) {
 		boolean contains = false;
 		Link temp = head;
+		
 		do {
 			if (temp.data == o) {
 				return contains = true;
@@ -93,32 +129,34 @@ public class LList {
 		}
 	}
 	
-	//Equivalent to addLast()
+	/**
+	 * Appends specified element to end of list
+	 * @return true when appended
+	 */
 	public boolean add(Object item) {
-		Link itemLink = new Link(item);
-		tail.next = itemLink;
-		tail = itemLink;
+		Link insert = new Link(item);
+		tail.next = insert;
+		tail = insert;
+		
 		capacity++;
 		return true;
 	}
 	
 	/**
 	 * Removes first occurence of specified element.
-	 * @param o
 	 * @return true if list has been changed
 	 */
 	public boolean remove(Object o) {
 		Link curr = head;
-		Link prev = null;
 		boolean removed = false;
 		
 		do {
-			prev.next = curr;
 			if (curr.data == o) {
-				prev.next = curr.next;
+				curr.prev = curr.next;
 				capacity--;
 				return removed = true;
 			}
+			curr = curr.next;
 		} while (curr.next != null);
 		
 		return removed;
@@ -131,13 +169,17 @@ public class LList {
 	 */
 	public boolean addAll(Collection c) throws NullPointerException {
 		boolean added = false;
+		
 		if (c.isEmpty()) {
 			throw new NullPointerException("Collection is empty.");
 		} else {
 			for (Object item : c) {
-				Link itemLink = new Link(item);
-				tail.next = itemLink;
-				tail = itemLink;
+				Link append = new Link(item);
+				Link temp = tail;
+				
+				tail.next = append;
+				append.prev = temp;
+				tail = append;
 				capacity++;
 			}
 			added = true;
@@ -162,22 +204,30 @@ public class LList {
 		} else if (c.isEmpty()) {
 			throw new NullPointerException("Collection is empty.");
 		} else {
-			Link pos = head;
-			Link prev = null;
+			Link curr = head;
 			int count = 0;
+			
+			//Update index and current position in list
 			while (count != index) {
+				curr = curr.next;
 				count++;
-				prev = pos;
-				pos = pos.next;
 			}
 			
+			//Save place in original list to join back after insertion
+			Link currNext = curr.next;
+			
 			for (Object item : c) {
-				Link itemLink = new Link(item);
-				prev.next = itemLink;
-				prev = itemLink;
+				Link insert = new Link(item);
+				
+				curr.next = insert;
+				insert.prev = curr;
+				
+				curr = insert;
 				capacity++;
 			}
-			prev.next = pos;
+			curr.next = currNext;
+			currNext.prev = curr;
+			
 			added = true;
 		}
 		return added;
@@ -189,6 +239,10 @@ public class LList {
 		this.capacity = 0;
 	}
 	
+	/**
+	 * Returns element at specified position in list.
+	 * @throws IndexOutOfBoundsException if index out of range
+	 */
 	public Object get(int index) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= capacity) {
 			throw new IndexOutOfBoundsException("Invalid index");
@@ -204,94 +258,79 @@ public class LList {
 	
 	/**
 	 * Replaces element at specified position in list with new element.
-	 * @param index
-	 * @param item
-	 * @return temp the replaced element
+	 * @return curr the replaced element
 	 */
 	public Object set(int index, Object item) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= capacity) {
 			throw new IndexOutOfBoundsException("Invalid index");
 		}
 		
-		Link prev = head;
-		Link linkItem = new Link(item);
+		Link curr = head; //the element to be replaced
+		Link replace = new Link(item);
 		
 		for (int i = 0; i < index; i++) {
-			prev = prev.next;
+			curr = curr.next;
 		}
 		
-		Link temp = prev.next;
-		prev.next = linkItem;
-		linkItem.next = temp.next;
-		
-		return temp;
+		replace.prev = curr.prev;
+		replace.next = curr.next;
+		return curr;
 	}
 	
 	/**
-	 * Inserts element into speficied position in list.
-	 * @param index
-	 * @param item
+	 * Inserts element into specified position in list.
 	 */
 	public void add(int index, Object item) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= capacity) {
 			throw new IndexOutOfBoundsException("Invalid index");
 		}
 		
-		Link prev = head;
-		Link linkItem = new Link(item);
+		Link curr = head;
+		Link insert = new Link(item);
 		
 		for (int i = 0; i < index; i++) {
-			prev = prev.next;
+			curr = curr.next;
 		}
 		
-		Link temp = prev.next;
-		prev.next = linkItem;
-		linkItem.next = temp;
+		insert.next = curr.next;
+		curr.next = insert;
+		insert.prev = curr;
+		
 		capacity++;
 	}
 	
 	/**
-	 * Removes element at specified position
-	 * @param index
-	 * @param item
-	 * @return
-	 * @throws IndexOutOfBoundsException
+	 * Removes element at specified position, shifts any subsequent 
+	 * elements to the left.
+	 * @return curr the element previously at index
 	 */
-	public Object remove(int index, Object item) throws IndexOutOfBoundsException {
-		if (index < 0 || index >= capacity) {
-			throw new IndexOutOfBoundsException("Invalid index");
-		}
-		
-		Link prev = head;
-		Link linkItem = new Link(item);
+	public Object remove(int index) {
+		Link curr = head;
 		
 		for (int i = 0; i < index; i++) {
-			prev = prev.next;
+			curr = curr.next;
 		}
 		
-		Link temp = prev.next;
-		prev.next = temp.next;
+		curr.prev = curr.next;
 		capacity--;
-		
-		return temp;
+		return curr;
 	}
 	
 	/**
 	 * Returns index of first occurence of element
-	 * @param o
 	 * @return index index of first occurence, otherwise -1 if not found
 	 */
 	public int indexOf(Object o) {
 		int index = 0;
+		Link curr = head;
 		
-		Link temp = head;
 		do {
-			if (temp.data == o) {
+			if (curr.data == o) {
 				return index;
 			}
-			temp = temp.next;
+			curr = curr.next;
 			index++;
-		} while (temp.next != null);
+		} while (curr.next != null);
 		
 		return index = -1;
 	}
@@ -302,19 +341,18 @@ public class LList {
 	 * @return -1 if not found, otherwise the largest index
 	 */
 	public int lastIndexOf(Object o) {
-		int currIdx = 0;
-		int index = -1;
+		int index = capacity;
+		Link curr = tail;
 		
-		Link temp = head;
 		do {
-			if (temp.data == o) {
-				index = currIdx;
+			if (curr.data == o) {
+				return index;
 			}
-			temp = temp.next;
-			currIdx++;
-		} while (temp.next != null);
+			curr = curr.prev;
+			index--;
+		} while (curr.prev != null);
 		
-		return index;
+		return index = -1;
 	}
 	
 	/**
@@ -350,7 +388,9 @@ public class LList {
 		}
 		
 		Link temp = head;
+		
 		head = head.next;
+		head.prev = null;
 		capacity--;
 		
 		return temp;
@@ -368,6 +408,7 @@ public class LList {
 		
 		Link temp = head;
 		head = head.next;
+		head.prev = null;
 		capacity--;
 		
 		return temp;
@@ -379,9 +420,25 @@ public class LList {
 	 * @return true after adding
 	 */
 	public boolean offer(Object o) {
-		Link add = new Link(o);
-		tail.next = new Link(o);
-		tail = add;
+		Link append = new Link(o);
+		
+		tail.next = append;
+		append.prev = tail;
+		
+		tail = append;
+		capacity++;
+		return true;
+	}
+	
+	/**
+	 * Inserts specified element at front of list.
+	 */
+	public boolean offerFirst(Object o) {
+		Link insert = new Link(o);
+		insert.next = head;
+		head.prev = insert;
+		
+		head = insert;
 		capacity++;
 		return true;
 	}
@@ -392,9 +449,12 @@ public class LList {
 	 * @return true after adding
 	 */
 	public boolean offerLast(Object o) {
-		Link add = new Link(o);
-		tail.next = new Link(o);
-		tail = add;
+		Link append = new Link(o);
+		
+		tail.next = append;
+		append.prev = tail;
+		
+		tail = append;
 		capacity++;
 		return true;
 	}
@@ -432,6 +492,7 @@ public class LList {
 		
 		Link temp = head;
 		head = head.next;
+		head.prev = null;
 		capacity--;
 		
 		return temp;
@@ -446,13 +507,12 @@ public class LList {
 			return null;
 		}
 		
-		Link temp = head;
-		do {
-			temp = temp.next;
-		} while (temp.next.next != null);
-		
-		tail = temp;
+		Link temp = tail;
+		tail = tail.prev;
+		tail.next = null;
 		capacity--;
+		
+		return temp;
 	}
 	
 	/**
@@ -461,6 +521,8 @@ public class LList {
 	 */
 	public void push(Object o) {
 		Link insert = new Link(o);
+		
+		head.prev = insert;
 		insert.next = head;
 		head = insert;
 		capacity++;
@@ -468,8 +530,7 @@ public class LList {
 	
 	/**
 	 * Removes and returns first element on list
-	 * @return
-	 * @throws NoSuchElementException
+	 * @throws NoSuchElementException if list is empty
 	 */
 	public Object pop() throws NoSuchElementException {
 		if (head == null && tail == null) {
@@ -477,7 +538,9 @@ public class LList {
 		}
 		
 		Link temp = head;
+		
 		head = head.next;
+		head.prev = null;
 		capacity--;
 		
 		return temp;
@@ -489,66 +552,67 @@ public class LList {
 	 * @return false if list is unchanged, true if changed
 	 */
 	public boolean removeFirstOccurrence(Object o) {
-		Link temp = head;
+		Link curr = head;
 		boolean removed = false;
 		
 		//Handle edge case if head contains the specified element
 		if (head.data == o) {
 			head = head.next;
+			head.prev = null;
 			capacity--;
 			return true;
 		}
 		
 		do {
-			if (temp.next.data == o) {
-				temp.next = temp.next.next;
-				return true;
-			// Handle edge case if tail contains the specified element
-			} else if (temp.next == tail && tail.data == o) {
-				tail = temp;
+			//Handle edge case if occurence is at tail
+			if (curr == tail && curr.data == o) {
+				tail = tail.prev;
+				tail.next = null;
 				capacity--;
 				return true;
 			}
-			temp = temp.next;
-		} while (temp.next != null);
+			if (curr.data == o) {
+				curr.prev = curr.next;
+				return true;
+			}
+			curr = curr.next;
+		} while (curr.next != null);
 		
 		return removed;
 	}
 	
 	/**
-	 * Removed last occurence of specified element
+	 * Remove last occurence of specified element
 	 * @param o
 	 * @return true if element removed, false if list unchanged
 	 */
 	public boolean removeLastOccurrence(Object o) {
-		boolean occured = false;
-		Link prev = null;
-		Link temp = head;
+		boolean removed = false;
+		Link curr = tail;
 		
 		do {
-			if (temp.next.data == o) {
-				prev = temp;
-			//Handle edge case if tail contains specified element
-			} else if (temp.next == tail && tail.data == o) {
-				tail = temp;
+			//Handle edge case if found in tail
+			if (curr.data == o && curr == tail) {
+				tail = tail.prev;
+				tail.next = null;
+				capacity--;
+				return true;
+			//Found last occurence anywhere else in list before reaching head
+			} else if (curr.data == o) {
+				curr.prev = curr.next;
+				capacity--;
+				return true;
+			//Handle edge case if head contains specified element
+			} else if (curr == head && curr.data == o) {
+				head = head.next;
+				head.prev = null;
 				capacity--;
 				return true;
 			}
-			temp = temp.next;
-		} while (temp.next != null);
+			curr = curr.prev;
+		} while (curr.prev != null);
 		
-		//Handle edge case where only head contains specified element
-		if (prev == null && head.data == o) {
-			head = head.next;
-			capacity--;
-			return true;
-		} else if (prev != null) {
-			prev.next = prev.next.next;
-			capacity--;
-			return true;
-		}
-		
-		return occured;
+		return removed;
 	}
 	
 	

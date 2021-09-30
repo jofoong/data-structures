@@ -1,6 +1,4 @@
 /**
- * TODO: make this a doubly linked list. whoops!
- * 
  * Implementation of doubly-linked list.
  * (Just realised implementing all function in the docs 
  * is just @____@)
@@ -8,7 +6,7 @@
  * @author Jolene
  * @since 28/9/21
  */
-package LList;
+package ListAndQueue;
 
 import java.util.Collection;
 import java.util.ListIterator;

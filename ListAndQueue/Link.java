@@ -1,15 +1,15 @@
-package LList;
+package ListAndQueue;
 
 public class Link {
 
-	Link prev;
-	Link next;
+	protected Link prev;
+	protected Link next;
 	Object data;
 	
 	public Link(Object data) {
 		this.prev = null;
-		this.next= null;
+		this.next = null;
 		this.data = data;
 	}
-	
+
 }

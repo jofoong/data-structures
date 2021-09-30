@@ -1,12 +1,14 @@
 /**
  * Implementation of doubly-linked list.
- * (Just realised implementing all function in the docs 
- * is just @____@)
+ * 
+ * Oh crap, I think I missed out on a lot of head/tail==null
+ * checking when popping and stuff...
+ * TODO ^ 
  * 
  * @author Jolene
  * @since 28/9/21
  */
-package ListAndQueue;
+package list;
 
 import java.util.Collection;
 import java.util.ListIterator;

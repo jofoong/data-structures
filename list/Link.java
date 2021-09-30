@@ -1,4 +1,4 @@
-package ListAndQueue;
+package list;
 
 public class Link {
 

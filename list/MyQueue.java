@@ -1,10 +1,15 @@
 /**
  * Implementing Queue from scratch, FIFO.
+ * 
+ * TODO: 
+ * 1. double check popping etc safety
+ * 2. whether you're returning the correct type bc 
+ * 		Object is too generic
  * @author Jolene
  *
  */
 
-package ListAndQueue;
+package list;
 
 import java.util.NoSuchElementException;
 

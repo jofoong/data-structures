@@ -9,7 +9,7 @@
  *
  */
 
-package list;
+package link;
 
 import java.util.NoSuchElementException;
 

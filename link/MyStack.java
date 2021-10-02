@@ -3,7 +3,7 @@
  * Implementation of stack. LIFO
  * @author Jolene
  */
-package list;
+package link;
 
 import java.util.EmptyStackException;
 

@@ -1,4 +1,4 @@
-package list;
+package link;
 
 public class Link {
 

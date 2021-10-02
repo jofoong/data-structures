@@ -8,7 +8,7 @@
  * @author Jolene
  * @since 28/9/21
  */
-package list;
+package link;
 
 import java.util.Collection;
 import java.util.ListIterator;

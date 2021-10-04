@@ -1,3 +1,5 @@
+import hashmap.HashPair;
+import hashmap.MyHashMap;
 
 public class Main {
 
@@ -15,7 +17,12 @@ public class Main {
 		bananaPhone.add(ring2);
 		bananaPhone.add(ring3);
 		bananaPhone.set(0, ring6);
-		System.out.println(bananaPhone.contains(ring6));
+		//System.out.println(bananaPhone.contains(ring6));
+		
+		MyHashMap<Integer> hashMap = new MyHashMap<>();
+		HashPair testBucket = new HashPair();
+		int printHash = hashMap.hash(ring5);
+		System.out.println(printHash);
 	}
 
 }
